@@ -12,7 +12,25 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
 
     train_loss, train_acc = 0,0
 
-    for batch, (x, y) in enumerate(dataloader):
+    if isinstance(dataloader, torch.utils.data.DataLoader):
+        for batch, (x, y) in enumerate(dataloader):
+            x, y = x.to(device), y.to(device)
+
+            y_pred = model(x).to(device)# .squeeze()
+            if pred_argmax != None:
+                test_pred = test_pred.argmax(dim=pred_argmax)
+
+            loss = loss_fn(y_pred, y)
+            train_loss += loss
+            train_acc += accuracy_fn(y, y_pred)
+
+            optimizer.zero_grad()
+
+            loss.backward()
+
+            optimizer.step()
+    elif isinstance(dataloader, tuple):
+        x, y = dataloader
         x, y = x.to(device), y.to(device)
 
         y_pred = model(x).to(device)# .squeeze()
@@ -37,16 +55,28 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
 
 
 
-def test_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn: nn.Module, accuracy_fn, device, pred_argmax=None):
+def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, device, pred_argmax=None):
 
     model.eval()
 
     with torch.inference_mode():
         test_loss, test_acc = 0, 0
 
-        for x_test, y_test in dataloader:
+        if isinstance(dataloader, torch.utils.data.DataLoader):
+            for x_test, y_test in dataloader:
+                x_test, y_test = x_test.to(device), y_test.to(device)
+                
+                test_pred = model(x_test).to(device)
+                if pred_argmax != None:
+                    test_pred = test_pred.argmax(dim=pred_argmax)
+                # test_pred = torch.round(torch.sigmoid(test_logits))
+
+                test_loss += loss_fn(test_pred, y_test)
+                test_acc += accuracy_fn(y_test, test_pred)
+        elif isinstance(dataloader, tuple):
+            x_test, y_test = dataloader
             x_test, y_test = x_test.to(device), y_test.to(device)
-            
+                
             test_pred = model(x_test).to(device)
             if pred_argmax != None:
                 test_pred = test_pred.argmax(dim=pred_argmax)
@@ -62,7 +92,7 @@ def test_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn
 
 
 
-def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None, models_dir="models", models_subdir=None, pred_argmax=None):
+def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None, models_dir="models", models_subdir=None, pred_argmax=None):
     """
     wrapper function to train and test model
     """
@@ -89,13 +119,17 @@ def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloade
             print(f"\n\nEPOCH {epoch} | Train loss: {train_loss:.3f} | Train acc: {(train_acc*100):.2f}% | Test loss: {test_loss:.3f} | Test acc: {(test_acc*100):.2f}% \n")
 
 
-        with open(save_results_location, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=4)
 
         if save_each != None:
             if epochs % save_each == 0:
+                with open(save_results_location, "w", encoding="utf-8") as f:
+                    json.dump(results, f, indent=4)
                 mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
-        
+        else:
+            with open(save_results_location, "w", encoding="utf-8") as f:
+                json.dump(results, f, indent=4)
+
+                
         if early_stop_epoch != None and epoch > 5:
             recent_test_loss = min(results["test_loss"][-5:])
             recent_test_acc = max(results["test_acc"][-5:])
