@@ -24,9 +24,12 @@ class ModelManager():
         model_path = model_path / name
         return model_path
 
-    def save(self, model, name="{modelname}", dir="models", subdir=None, loss=None, acc=None, epoch=None, compare_saved_metric="loss"):
+    def save(self, model, name="{modelname}", dir="models", subdir=None, loss=None, acc=None, compare_saved_metric="loss"):
         """
+        Saves a given models state_dict
+        Returns path
         loss must be specified in default name
+        compare_saved_metric: None (default), "loss" or "acc"
         """
         if "{loss}" in name:
             assert loss != None, "Name got {loss} substring to fill, loss therefore needs to be specified"
@@ -52,19 +55,25 @@ class ModelManager():
                         compare_files.append(int(filename_metric))
 
             if compare_saved_metric == "loss":
-                if not any([metric > loss for metric in compare_files]):
+                if not any([metric < loss for metric in compare_files]):
                     save = False
             else:
                 if not any([metric > acc for metric in compare_files]):
                     save = False
 
         if save:
+            name = name + "" if loss == None else f"_loss={loss:.3f}" + "" if acc == None else f"_acc={acc:.2f}" + ".pth"
             path = self._mk_model_path(dir, subdir, name)
             torch.save(model.state_dict(), path)
+            return path
+        else:
+            return None
 
 
     def load(self, name=None, dir="models", subdir=None, load_best_metric=False):
         """
+        Loads a models state_dict
+        Returns the state_dict, which needs to be put into an instantiated model with model.load_state_dict()
         load_best: None (default), "loss" or "acc"
         """
         assert name != None or load_best_metric != False, "Specify a name or load the best model"
@@ -73,10 +82,32 @@ class ModelManager():
 
         if load_best_metric:
             dirpath = self._mk_model_path(dir, subdir)
-            # find best model
-        else:
-            path = self._mk_model_path(dir, subdir, name)
+            
+            best_model = []
+            for file in os.listdir(dirpath):
+                filename = os.fsdecode(file)
+                if filename.split(".")[-1] in ("pth", "pt") and filename.startswith(name) and load_best_metric in filename:
+                    filename_metric = filename.split(load_best_metric + "=")[1]
+                    filename_metric = filename_metric.split("_")[0]
+                    if filename_metric.isnumeric():
+                        if best_model == []:
+                            best_model = [int(filename_metric), filename]
+                            continue
+                        if load_best_metric == "loss":
+                            if int(filename_metric) < best_model[0]:
+                                best_model = [int(filename_metric), filename]
+                        else:
+                            if int(filename_metric) > best_model[0]:
+                                best_model = [int(filename_metric), filename]
 
+            name = best_model[1]
+        
+        path = self._mk_model_path(dir, subdir, name)
+        return torch.load(path)
+            
     def test(self):
+        """
+        Test function. If successful, prints "test successful"
+        """
         print("test successful")
 
