@@ -3,6 +3,7 @@
 """
 
 from torch import nn
+import logging
 from .runner import train_full_fn
 
 class HyParamOptim():
@@ -10,8 +11,10 @@ class HyParamOptim():
     Optimize hyper-parameters
     """
 
-    def __init__(self, modelclass: nn.Module, modelclass_kwargs, optimizerclass, variance: int, perf_importance: float, learning_rate: float, layers, hidden_units, train_full_fn_kwargs, epochs=5, stop_early_iters=5):
+    def __init__(self, modelclass: nn.Module, modelclass_kwargs, optimizerclass, variance: int, perf_importance: float, learning_rate: float, layers, hidden_units, train_full_fn_kwargs, epochs=5, stop_early_iters=5, logging1=None):
         train_full_fn_kwargs["epochs"] = epochs
+
+        self.logging = logging1 if logging1 != None else logging
         
         self.modelclass = modelclass
         self.variance = variance

@@ -6,13 +6,17 @@ from torch import nn
 from pathlib import Path
 import os
 import torch
+import logging
 
 class ModelManager():
     """
-    
+    Loads and saves models, compares them to already existing ones
     """
-    def __init__(self):
-        pass
+    def __init__(self, logging1):
+        if logging1 != None:
+            self.logging = logging1
+        else:
+            self.logging = logging
 
     def _mk_model_path(self, dir, subdir, name=None):
         """
@@ -24,7 +28,7 @@ class ModelManager():
 
         if name != None:
             model_path = model_path / name
-            
+
         return model_path
 
     def save(self, model, name="{modelname}", dir="models", subdir=None, loss=None, acc=None, compare_saved_metric="loss"):
@@ -68,8 +72,10 @@ class ModelManager():
             name = name + "" if loss == None else f"_loss={loss:.3f}" + "" if acc == None else f"_acc={acc:.2f}" + ".pth"
             path = self._mk_model_path(dir, subdir, name)
             torch.save(model.state_dict(), path)
+            self.logging.info(f"Saving model at path {path}")
             return path
         else:
+            self.logging.info(f"Not saving model as better ones have been found")
             return None
 
 
@@ -106,6 +112,7 @@ class ModelManager():
             name = best_model[1]
         
         path = self._mk_model_path(dir, subdir, name)
+        self.logging.info(f"Loading model from path {path}")
         return torch.load(path)
             
     def test(self):

@@ -97,7 +97,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
     wrapper function to train and test model
     """
     
-    mm = ModelManager()
+    mm = ModelManager(logging)
     results = {
         "train_loss": [],
         "train_acc": [],
@@ -120,11 +120,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
 
 
         if save_each != None:
-            print(0)
-            print(epoch)
-            print(save_each)
             if epoch % save_each == 0:
-                print(1)
                 with open(save_results_location, "w", encoding="utf-8") as f:
                     json.dump(results, f, indent=4)
                 print(2)
