@@ -96,7 +96,7 @@ def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloade
             if epochs % save_each == 0:
                 mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
         
-        if early_stop_epoch != None:
+        if early_stop_epoch != None and epoch > 5:
             recent_test_loss = min(results["test_loss"][-5:])
             recent_test_acc = max(results["test_acc"][-5:])
 
