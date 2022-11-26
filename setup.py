@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "1.14" 
+VERSION = "1.15" 
 DESCRIPTION = "Helpful modules for pytorch"
 LONG_DESCRIPTION = "Mini package, machine learning help modules for pytorch"
 

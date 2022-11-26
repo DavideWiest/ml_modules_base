@@ -119,9 +119,10 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
             print(f"\n\nEPOCH {epoch} | Train loss: {train_loss:.3f} | Train acc: {(train_acc*100):.2f}% | Test loss: {test_loss:.3f} | Test acc: {(test_acc*100):.2f}% \n")
 
 
-
         if save_each != None:
             print(0)
+            print(epoch)
+            print(save_each)
             if epoch % save_each == 0:
                 print(1)
                 with open(save_results_location, "w", encoding="utf-8") as f:
@@ -134,7 +135,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
                 json.dump(results, f, indent=4)
 
                 
-        if early_stop_epoch != None and epoch > 5:
+        if early_stop_epoch != None and epoch > early_stop_epoch:
             recent_test_loss = min(results["test_loss"][-5:])
             recent_test_acc = max(results["test_acc"][-5:])
 
