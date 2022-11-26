@@ -121,10 +121,14 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
 
 
         if save_each != None:
-            if epochs % save_each == 0:
+            print(0)
+            if epoch % save_each == 0:
+                print(1)
                 with open(save_results_location, "w", encoding="utf-8") as f:
                     json.dump(results, f, indent=4)
+                print(2)
                 mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
+                print(3)
         else:
             with open(save_results_location, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)
@@ -138,7 +142,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
                 logging.info(f"\nStopping early with EPOCH {epoch} as no improvements in loss and accuracy have been made within the {early_stop_epoch} last epochs.\n")
                 break
     
-    return results
+    return results, model
 
 
 

@@ -14,14 +14,9 @@ def accuracy_fn_variance(y_true, y_pred, variance_allowed=0.025):
     return acc
 
 def accuracy_fn_regression(y_true, y_pred):
-    print(y_true[:10])
-    print(y_pred[:10])
     deltas = torch.abs(y_pred - y_true)
-    print(deltas[:10])
     sum_acc = (deltas / y_true).sum().item()
-    print(sum_acc)
     acc = sum_acc/len(y_true)
-    print(acc)
     return acc
 
 def plot_loss_curves(results):
@@ -60,5 +55,22 @@ def plot_loss_curves(results):
     plt.title("Accuracy")
     plt.xlabel("Epochs")
     plt.legend()
+
+    plt.show()
+
+
+def plot_regression_pred_full(train_data, train_labels, test_data, test_labels, predictions=None, predictions2=None):
+    train_data, train_labels = train_data.type(torch.float32), train_labels.type(torch.float32)
+
+    plt.figure(figsize=(train_data.max() * 4, train_labels.max() * 4))
+
+    plt.scatter(train_data, train_labels, c="b", s=4, label="Training data")
+
+    plt.scatter(test_data, test_labels, c="g", s=4, label="Testing data")
+
+    if predictions != None:
+        plt.scatter(test_data, predictions, c="r", s=4, label="Predictions")
+    if predictions2 != None:
+        plt.scatter(train_data, predictions2, c="r", s=4, label="Predictions 2")
 
     plt.show()
