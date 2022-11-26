@@ -62,10 +62,10 @@ class ModelManager():
                         compare_files.append(int(filename_metric))
 
             if compare_saved_metric == "loss":
-                if not any([metric < loss for metric in compare_files]):
+                if any([metric < loss for metric in compare_files]):
                     save = False
             else:
-                if not any([metric > acc for metric in compare_files]):
+                if any([metric > acc for metric in compare_files]):
                     save = False
 
         if save:
@@ -75,7 +75,7 @@ class ModelManager():
             self.logging.info(f"Saving model at path {path}")
             return path
         else:
-            self.logging.info(f"Not saving model as better ones have been found")
+            self.logging.info(f"Not saving model as better ones have been found (dirpath: {dirpath})")
             return None
 
 
