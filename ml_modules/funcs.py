@@ -14,9 +14,14 @@ def accuracy_fn_variance(y_true, y_pred, variance_allowed=0.025):
     return acc
 
 def accuracy_fn_regression(y_true, y_pred):
+    print(y_true[:10])
+    print(y_pred[:10])
     deltas = torch.abs(y_pred - y_true)
+    print(deltas[:10])
     sum_acc = (deltas / y_true).sum().item()
-    acc = sum_acc/len(y_pred)
+    print(sum_acc)
+    acc = sum_acc/len(y_true)
+    print(acc)
     return acc
 
 def plot_loss_curves(results):

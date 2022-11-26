@@ -136,7 +136,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
 
             if recent_test_loss > min(results["test_loss"][:-5]) and recent_test_acc < max(results["test_acc"][:-5]):
                 logging.info(f"\nStopping early with EPOCH {epoch} as no improvements in loss and accuracy have been made within the {early_stop_epoch} last epochs.\n")
-
+                break
     
     return results
 
