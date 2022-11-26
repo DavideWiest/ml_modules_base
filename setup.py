@@ -1,16 +1,15 @@
 from setuptools import setup, find_packages
 
 VERSION = '0.0.1' 
-DESCRIPTION = 'My first Python package'
-LONG_DESCRIPTION = 'My first Python package with a slightly longer description'
+DESCRIPTION = 'Helpful modules for pytorch'
+LONG_DESCRIPTION = 'Machine learning help modules for pytorch'
 
 # Setting up
 setup(
-       # the name must match the folder name 'verysimplemodule'
-        name="verysimplemodule", 
+        name="ml_modules", 
         version=VERSION,
         author="Jason Dsouza",
-        author_email="<youremail@email.com>",
+        author_email="<jasnadw03@gmail.com>",
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
@@ -22,7 +21,7 @@ setup(
             "torchvision",
             "tqdm",
         ],
-        keywords=['pytorch', 'helping functions', 'machine learning'],
+        keywords=['pytorch', 'helping functions'],
         classifiers= [
             "Development Status :: 3 - Alpha",
             "Intended Audience :: Education",
