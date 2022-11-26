@@ -73,7 +73,7 @@ def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloade
     
     for epoch in tqdm(range(epochs)):
         train_loss, train_acc = train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device)
-        test_loss, test_acc = test_step(model, test_dataloader, loss_fn, optimizer, accuracy_fn, device)
+        test_loss, test_acc = test_step(model, test_dataloader, loss_fn, accuracy_fn, device)
         results["train_loss"].append(float(train_loss))
         results["train_acc"].append(float(train_acc))
         results["test_loss"].append(float(test_loss))
