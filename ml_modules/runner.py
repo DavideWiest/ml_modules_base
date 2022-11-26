@@ -58,7 +58,7 @@ def test_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn
 
 
 
-def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None):
+def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None, models_dir="models", models_subdir=None):
     """
     wrapper function to train and test model
     """
@@ -79,21 +79,25 @@ def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloade
         results["test_loss"].append(float(test_loss))
         results["test_acc"].append(float(test_acc))
 
-        logging.info(f"\n\nEPOCH {epoch} | Train loss: {train_loss:.3f} | Train acc: {(train_acc*100):.2f}% | Test loss: {test_loss:.3f} | Test acc: {(test_acc*100):.2f}% \n")
+        if logging != None:
+            logging.info(f"\n\nEPOCH {epoch} | Train loss: {train_loss:.3f} | Train acc: {(train_acc*100):.2f}% | Test loss: {test_loss:.3f} | Test acc: {(test_acc*100):.2f}% \n")
+        else:
+            print(f"\n\nEPOCH {epoch} | Train loss: {train_loss:.3f} | Train acc: {(train_acc*100):.2f}% | Test loss: {test_loss:.3f} | Test acc: {(test_acc*100):.2f}% \n")
+
 
         with open(save_results_location, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=4)
 
         if save_each != None:
             if epochs % save_each == 0:
-                mm.save(model, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
+                mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
         
         if early_stop_epoch != None:
             recent_test_loss = min(results["test_loss"][-5:])
             recent_test_acc = max(results["test_acc"][-5:])
 
-            if recent_test_loss > min(results["test_loss"][:-5]) and recent_test_acc > min(results["test_acc"][:-5]):
-                logging.info(f"Stopping early with EPOCH {epoch}")
+            if recent_test_loss > min(results["test_loss"][:-5]) and recent_test_acc < max(results["test_acc"][:-5]):
+                logging.info(f"\nStopping early with EPOCH {epoch} as no improvements in loss and accuracy have been made within the {early_stop_epoch} last epochs.\n")
 
     
     return results
