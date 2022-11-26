@@ -15,11 +15,10 @@ setup(
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
         install_requires=[
-            "pytorch",
+            "torch",
             "numpy",
             "pandas",
             "matplotlib",
-            "pytorch",
             "torchvision",
             "tqdm",
         ],
