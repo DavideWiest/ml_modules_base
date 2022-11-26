@@ -3,7 +3,7 @@
 """
 
 from torch import nn
-from runner import train_full_fn
+from .runner import train_full_fn
 
 class HyParamOptim():
     """
@@ -30,7 +30,7 @@ class HyParamOptim():
     def test_values(self):
         modelclass_kwargs = self.modelclass_kwargs
         modelclass_kwargs["hidden_units"] = self.values["hidden_units"]
-        
+
         model = self.modelclass()
         optim = self.optimizer()
 
