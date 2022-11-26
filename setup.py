@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 VERSION = '0.0.1' 
 DESCRIPTION = 'Helpful modules for pytorch'
-LONG_DESCRIPTION = 'Machine learning help modules for pytorch'
+LONG_DESCRIPTION = 'Mini package, machine learning help modules for pytorch'
 
 # Setting up
 setup(
         name="ml_modules", 
         version=VERSION,
-        author="Jason Dsouza",
+        author="Davide Wiest",
         author_email="<jasnadw03@gmail.com>",
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
