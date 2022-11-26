@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1' 
-DESCRIPTION = 'Helpful modules for pytorch'
-LONG_DESCRIPTION = 'Mini package, machine learning help modules for pytorch'
+VERSION = "0.0.1" 
+DESCRIPTION = "Helpful modules for pytorch"
+LONG_DESCRIPTION = "Mini package, machine learning help modules for pytorch"
 
 # Setting up
 setup(
@@ -21,7 +21,7 @@ setup(
             "torchvision",
             "tqdm",
         ],
-        keywords=['pytorch', 'helping functions'],
+        keywords=["pytorch", "helping functions"],
         classifiers= [
             "Development Status :: 3 - Alpha",
             "Intended Audience :: Education",
