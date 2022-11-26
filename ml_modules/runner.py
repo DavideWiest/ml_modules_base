@@ -15,7 +15,7 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
     for batch, (x, y) in enumerate(dataloader):
         x, y = x.to(device), y.to(device)
 
-        y_pred = model(x)# .squeeze()
+        y_pred = model(x).to(device)# .squeeze()
 
         loss = loss_fn(y_pred, y)
         train_loss += loss
@@ -45,7 +45,7 @@ def test_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn
         for x_test, y_test in dataloader:
             x_test, y_test = x_test.to(device), y_test.to(device)
             
-            test_pred = model(x_test).squeeze().to(device)
+            test_pred = model(x_test).to(device)
             # test_pred = torch.round(torch.sigmoid(test_logits))
 
             test_loss += loss_fn(test_pred, y_test)
