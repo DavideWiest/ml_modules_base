@@ -3,6 +3,8 @@ from torch import nn
 from tqdm.auto import tqdm
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader, Dataset
+from .modelmanager import ModelManager
+import json
 
 
 def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn: nn.Module, optimizer: torch.optim.Optimizer, accuracy_fn, device):
@@ -56,7 +58,12 @@ def test_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_fn
 
 
 
-def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device):
+def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None):
+    """
+    wrapper function to train and test model
+    """
+    
+    mm = ModelManager()
     results = {
         "train_loss": [],
         "train_acc": [],
@@ -73,6 +80,19 @@ def train_full_fn(model: nn.Module, train_dataloader: DataLoader, test_dataloade
         results["test_acc"].append(float(test_acc))
 
         print(f"\n\nEpoch {epoch} | train loss: {train_loss:.3f} | train acc: {(train_acc*100):.2f}% | test loss: {test_loss:.3f} | test acc: {(test_acc*100):.2f}% \n")
+
+        with open(save_results_location, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=4)
+
+        if save_each != None:
+            if epochs % save_each == 0:
+                mm.save(model, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
+        
+        if early_stop_epoch != None:
+            recent_test_loss = min(results["test_loss"][-5:])
+            recent_test_acc = max(results["test_acc"][-5:])
+            
+
     
     return results
 

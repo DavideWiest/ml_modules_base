@@ -14,13 +14,14 @@ class ModelManager():
     def __init__(self):
         pass
 
-    def _ml_model_path(self, dir, subdir, name):
+    def _mk_model_path(self, dir, subdir, name):
         """
-        
+        create path to model or to directory for model
         """
         model_path = Path(dir)
         if subdir != None:
             model_path = model_path / subdir
+
         model_path = model_path / name
         return model_path
 

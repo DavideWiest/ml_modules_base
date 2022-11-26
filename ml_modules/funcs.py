@@ -6,6 +6,13 @@ def accuracy_fn(y_true, y_pred):
     acc = correct/len(y_pred)
     return acc
 
+def accuracy_fn_regression(y_true, y_pred, variance_allowed=0.025):
+    variance = (torch.max(y_true) - torch.min(y_true)).item() * variance_allowed
+    deltas = torch.abs(y_pred - y_true)
+    correct = torch.le(deltas, variance).sum().item()
+    acc = correct/len(y_pred)
+    return acc
+
 def plot_loss_curves(results):
     """from: Daniel Bourke (https://youtu.be/Z_ikDlimN6A)
     Plots training curves of a results dictionary.
