@@ -4,7 +4,7 @@
 
 from torch import nn
 
-class HyperParamOptim():
+class HyParamOptim():
     """
     
     """
