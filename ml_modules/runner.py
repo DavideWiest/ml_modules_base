@@ -73,6 +73,7 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
 
                 test_loss += loss_fn(test_pred, y_test)
                 test_acc += accuracy_fn(y_test, test_pred)
+                
         elif isinstance(dataloader, tuple):
             x_test, y_test = dataloader
             x_test, y_test = x_test.to(device), y_test.to(device)
@@ -123,9 +124,8 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
             if epoch % save_each == 0:
                 with open(save_results_location, "w", encoding="utf-8") as f:
                     json.dump(results, f, indent=4)
-                print(2)
+
                 mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
-                print(3)
         else:
             with open(save_results_location, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)
