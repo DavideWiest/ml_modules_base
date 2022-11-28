@@ -57,7 +57,7 @@ class ModelManager():
                     filename_metric = filename.split(compare_saved_metric + "=")[1]
                     filename_metric = filename_metric.split("_")[0]
                     if filename_metric.isnumeric():
-                        compare_files.append(int(filename_metric))
+                        compare_files.append(float(filename_metric))
 
             if compare_saved_metric == "loss":
                 if any([metric < loss for metric in compare_files]):
@@ -98,14 +98,14 @@ class ModelManager():
                     filename_metric = filename_metric.split("_")[0]
                     if filename_metric.isnumeric():
                         if best_model == []:
-                            best_model = [int(filename_metric), filename]
+                            best_model = [float(filename_metric), filename]
                             continue
                         if load_best_metric == "loss":
-                            if int(filename_metric) < best_model[0]:
-                                best_model = [int(filename_metric), filename]
+                            if float(filename_metric) < best_model[0]:
+                                best_model = [float(filename_metric), filename]
                         else:
-                            if int(filename_metric) > best_model[0]:
-                                best_model = [int(filename_metric), filename]
+                            if float(filename_metric) > best_model[0]:
+                                best_model = [float(filename_metric), filename]
 
             name = best_model[1]
         
