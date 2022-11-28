@@ -15,14 +15,14 @@ def accuracy_fn_variance(y_true, y_pred, variance_allowed=0.025):
     return acc
 
 def accuracy_fn_regression(y_true, y_pred):
-    # deltas = torch.abs(y_pred - y_true)
-    # deltas = deltas ** 2
-    # sum_acc = (deltas / y_true).sum().item()
-    # acc = 1-sum_acc/len(y_true)
-    try:
-        acc = 1-mean_absolute_percentage_error(y_true.cpu().detach().numpy(), y_pred.cpu().detach().numpy())
-    except ValueError:
-        acc = -641967480526698.00
+    deltas = torch.abs(y_pred - y_true)
+    deltas = deltas ** 2
+    sum_acc = (deltas / y_true).sum().item()
+    acc = 1-sum_acc/len(y_true)
+    # try:
+    #     acc = 1-mean_absolute_percentage_error(y_true.cpu().detach().numpy(), y_pred.cpu().detach().numpy())
+    # except ValueError:
+    #     acc = -641967480526698.00
     
     return acc
 
