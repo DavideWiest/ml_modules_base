@@ -31,23 +31,21 @@ class ModelManager():
 
         return model_path
 
-    def save(self, model, name="{modelname}", dir="models", subdir=None, loss=None, acc=None, compare_saved_metric="loss"):
+    def save(self, model, modelname=None, dir="models", subdir=None, loss=None, acc=None, compare_saved_metric="loss"):
         """
         Saves a given models state_dict
         Returns path
         loss must be specified in default name
         compare_saved_metric: None (default), "loss" or "acc"
         """
-        if "{loss}" in name:
-            assert loss != None, "Name got {loss} substring to fill, loss therefore needs to be specified"
-        if "{acc}" in name:
-            assert acc != None, "Name got {acc} substring to fill, acc therefore needs to be specified"
 
         assert compare_saved_metric in (False, "loss", "acc"), f"Unsupported argument for compare_saved_metric: {compare_saved_metric}"
 
-        if name == "{modelname}":
+        if modelname == None:
             name = model.__class__.__name__
-            
+        else:
+            name = modelname
+        
         save = True
         if compare_saved_metric != False:
             # compare with other saved models

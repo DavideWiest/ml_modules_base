@@ -97,8 +97,10 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
     """
     wrapper function to train and test model
     """
-    
+
+    modelname = model.__class__.__name__
     mm = ModelManager(logging)
+
     results = {
         "train_loss": [],
         "train_acc": [],
@@ -107,6 +109,9 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
     }
     
     for epoch in tqdm(range(epochs)):
+
+        epoch = epoch+1
+        
         train_loss, train_acc = train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device, pred_argmax)
         test_loss, test_acc = test_step(model, test_dataloader, loss_fn, accuracy_fn, device, pred_argmax)
         results["train_loss"].append(float(train_loss))
@@ -125,7 +130,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
                 with open(save_results_location, "w", encoding="utf-8") as f:
                     json.dump(results, f, indent=4)
 
-                mm.save(model, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
+                mm.save(model, modelname=modelname, dir=models_dir, subdir=models_subdir, loss=test_loss, acc=test_acc, compare_saved_metric=compare_saved_metric)
         else:
             with open(save_results_location, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)

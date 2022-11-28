@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "1.19"
+VERSION = "1.20"
 DESCRIPTION = "Helpful modules for pytorch"
 LONG_DESCRIPTION = "Mini package, machine learning help modules for pytorch"
 
@@ -9,7 +9,7 @@ setup(
         name="ml_modules", 
         version=VERSION,
         author="Davide Wiest",
-        author_email="<jasnadw03@gmail.com>",
+        author_email="",
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),

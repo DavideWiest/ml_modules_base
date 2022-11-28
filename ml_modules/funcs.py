@@ -19,7 +19,11 @@ def accuracy_fn_regression(y_true, y_pred):
     # deltas = deltas ** 2
     # sum_acc = (deltas / y_true).sum().item()
     # acc = 1-sum_acc/len(y_true)
-    acc = 1-mean_absolute_percentage_error(y_true.cpu().detach().numpy(), y_pred.cpu().detach().numpy())
+    try:
+        acc = 1-mean_absolute_percentage_error(y_true.cpu().detach().numpy(), y_pred.cpu().detach().numpy())
+    except ValueError:
+        acc = -641967480526698.00
+    
     return acc
 
 def plot_loss_curves(results):
