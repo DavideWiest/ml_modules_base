@@ -60,10 +60,10 @@ class ModelManager():
                         compare_files.append(float(filename_metric))
 
             if compare_saved_metric == "loss":
-                if any([metric < loss for metric in compare_files]):
+                if any([metric <= loss for metric in compare_files]):
                     save = False
             else:
-                if any([metric > acc for metric in compare_files]):
+                if any([metric >= acc for metric in compare_files]):
                     save = False
 
         if save:
