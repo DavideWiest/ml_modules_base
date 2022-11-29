@@ -103,7 +103,14 @@ class ModelManager():
                 if filename.split(".")[-1] in ("pth", "pt") and filename.startswith(name) and load_best_metric in filename:
                     filename_metric = filename.split(load_best_metric + "=")[1]
                     filename_metric = filename_metric.split("_")[0]
-                    if filename_metric.isnumeric():
+
+                    try:
+                        float(filename_metric)
+                        isfloat = True
+                    except:
+                        isfloat = False
+
+                    if isfloat:
                         if best_model == []:
                             best_model = [float(filename_metric), filename]
                             continue
