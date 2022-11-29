@@ -32,7 +32,13 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
                 else:
                     print(debugmsg)
 
-            loss = loss_fn(y_pred, y)
+            if isinstance(y_pred, tuple) and isinstance(y, tuple):
+                loss = sum([loss_fn(y_pred[i], y[i]) for i in range(len(y_pred))])
+            elif isinstance(y_pred, tuple):
+                loss = sum([loss_fn(y_pred_pt, y) for y_pred_pt in y_pred])
+            else:
+                loss = loss_fn(y_pred, y)
+
             train_loss += loss
             train_acc += accuracy_fn(y, y_pred)
 
@@ -46,6 +52,7 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
         x, y = x.to(device), y.to(device)
 
         y_pred = model(x).to(device)# .squeeze()
+        
         if pred_argmax != None:
             y_pred = y_pred.argmax(dim=pred_argmax)
 
@@ -61,7 +68,13 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
             else:
                 print(debugmsg)
 
-        loss = loss_fn(y_pred, y)
+        if isinstance(y_pred, tuple) and isinstance(y, tuple):
+            loss = sum([loss_fn(y_pred[i], y[i]) for i in range(len(y_pred))])
+        elif isinstance(y_pred, tuple):
+            loss = sum([loss_fn(y_pred_pt, y) for y_pred_pt in y_pred])
+        else:
+            loss = loss_fn(y_pred, y)
+        
         train_loss += loss
         train_acc += accuracy_fn(y, y_pred)
 
@@ -89,16 +102,16 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
             for batch, (x_test, y_test) in enumerate(dataloader):
                 x_test, y_test = x_test.to(device), y_test.to(device)
                 
-                test_pred = model(x_test).to(device)
+                y_pred = model(x_test).to(device)
                 if pred_argmax != None:
-                    test_pred = test_pred.argmax(dim=pred_argmax)
-                # test_pred = torch.round(torch.sigmoid(test_logits))
+                    y_pred = y_pred.argmax(dim=pred_argmax)
+                # y_pred = torch.round(torch.sigmoid(test_logits))
 
                 if batch == 0 and print_debug:
                     debugmsg = "\n------\n".join([
                         f"First 20 x      elems of batch 0 (test ): \n" + str(x_test[:20]),
                         f"First 20 y      elems of batch 0 (test ): \n" + str(y_test[:20]),
-                        f"First 20 y pred elems of batch 0 (test ): \n" + str(test_pred[:20])
+                        f"First 20 y pred elems of batch 0 (test ): \n" + str(y_pred[:20])
                     ]) + "\n------\n"
 
                     if logging != None:
@@ -106,23 +119,30 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
                     else:
                         print(debugmsg)
 
-                test_loss += loss_fn(test_pred, y_test)
-                test_acc += accuracy_fn(y_test, test_pred)
+                if isinstance(y_pred, tuple) and isinstance(y_test, tuple):
+                    loss = sum([loss_fn(y_pred[i], y_test[i]) for i in range(len(y_pred))])
+                elif isinstance(y_pred, tuple):
+                    loss = sum([loss_fn(y_pred_pt, y_test) for y_pred_pt in y_pred])
+                else:
+                    loss = loss_fn(y_pred, y_test)
+
+                test_loss += loss
+                test_acc += accuracy_fn(y_test, y_pred)
                 
         elif isinstance(dataloader, tuple):
             x_test, y_test = dataloader
             x_test, y_test = x_test.to(device), y_test.to(device)
                 
-            test_pred = model(x_test).to(device)
+            y_pred = model(x_test).to(device)
             if pred_argmax != None:
-                test_pred = test_pred.argmax(dim=pred_argmax)
-            # test_pred = torch.round(torch.sigmoid(test_logits))
+                y_pred = y_pred.argmax(dim=pred_argmax)
+            # y_pred = torch.round(torch.sigmoid(test_logits))
 
             if print_debug:
                 debugmsg = "\n------\n".join([
                     f"First 20 x      elems of batch 0 (test ): \n" + str(x_test[:20]),
                     f"First 20 y      elems of batch 0 (test ): \n" + str(y_test[:20]),
-                    f"First 20 y pred elems of batch 0 (test ): \n" + str(test_pred[:20])
+                    f"First 20 y pred elems of batch 0 (test ): \n" + str(y_pred[:20])
                 ]) + "\n------\n"
 
                 if logging != None:
@@ -130,8 +150,15 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
                 else:
                     print(debugmsg)
 
-            test_loss += loss_fn(test_pred, y_test)
-            test_acc += accuracy_fn(y_test, test_pred)
+            if isinstance(y_pred, tuple) and isinstance(y_test, tuple):
+                loss = sum([loss_fn(y_pred[i], y_test[i]) for i in range(len(y_pred))])
+            elif isinstance(y_pred, tuple):
+                loss = sum([loss_fn(y_pred_pt, y_test) for y_pred_pt in y_pred])
+            else:
+                loss = loss_fn(y_pred, y_test)
+
+            test_loss += loss
+            test_acc += accuracy_fn(y_test, y_pred)
 
         test_loss /= len(dataloader)
         test_acc /= len(dataloader)
