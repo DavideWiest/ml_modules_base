@@ -86,6 +86,7 @@ class ModelManager():
         Loads a models state_dict
         Returns the state_dict, which needs to be put into an instantiated model with model.load_state_dict()
         load_best: None (default), "loss" or "acc"
+        Important: returns state dict and path, or None and empty string if no model found
         """
         assert name != None or load_best_metric != False, "Specify a name or load the best model"
         
