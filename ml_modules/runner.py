@@ -22,10 +22,10 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
 
             if batch == 0 and print_debug:
                 debugmsg = "\n------\n".join([
-                    f"First 20 x      elems of batch 0 (train): " + str(x[:20]),
-                    f"First 20 y      elems of batch 0 (train): " + str(y[:20]),
-                    f"First 20 y pred elems of batch 0 (train): " + str(y_pred[:20])
-                ])
+                    f"First 20 x      elems of batch 0 (train): \n" + str(x[:20]),
+                    f"First 20 y      elems of batch 0 (train): \n" + str(y[:20]),
+                    f"First 20 y pred elems of batch 0 (train): \n" + str(y_pred[:20])
+                ]) + "\n------\n"
 
                 if logging != None:
                     logging.info(debugmsg)
@@ -51,10 +51,10 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
 
         if print_debug:
             debugmsg = "\n------\n".join([
-                f"First 20 x      elems of batch 0 (train): " + str(x[:20]),
-                f"First 20 y      elems of batch 0 (train): " + str(y[:20]),
-                f"First 20 y pred elems of batch 0 (train): " + str(y_pred[:20])
-            ])
+                f"First 20 x      elems of batch 0 (train): \n" + str(x[:20]),
+                f"First 20 y      elems of batch 0 (train): \n" + str(y[:20]),
+                f"First 20 y pred elems of batch 0 (train): \n" + str(y_pred[:20])
+            ]) + "\n------\n"
 
             if logging != None:
                 logging.info(debugmsg)
@@ -96,10 +96,10 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
 
                 if batch == 0 and print_debug:
                     debugmsg = "\n------\n".join([
-                        f"First 20 x      elems of batch 0 (test ): " + str(x_test[:20]),
-                        f"First 20 y      elems of batch 0 (test ): " + str(y_test[:20]),
-                        f"First 20 y pred elems of batch 0 (test ): " + str(test_pred[:20])
-                    ])
+                        f"First 20 x      elems of batch 0 (test ): \n" + str(x_test[:20]),
+                        f"First 20 y      elems of batch 0 (test ): \n" + str(y_test[:20]),
+                        f"First 20 y pred elems of batch 0 (test ): \n" + str(test_pred[:20])
+                    ]) + "\n------\n"
 
                     if logging != None:
                         logging.info(debugmsg)
@@ -118,12 +118,12 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
                 test_pred = test_pred.argmax(dim=pred_argmax)
             # test_pred = torch.round(torch.sigmoid(test_logits))
 
-            if batch == 0 and print_debug:
+            if print_debug:
                 debugmsg = "\n------\n".join([
-                    f"First 20 x      elems of batch 0 (test ): " + str(x_test[:20]),
-                    f"First 20 y      elems of batch 0 (test ): " + str(y_test[:20]),
-                    f"First 20 y pred elems of batch 0 (test ): " + str(test_pred[:20])
-                ])
+                    f"First 20 x      elems of batch 0 (test ): \n" + str(x_test[:20]),
+                    f"First 20 y      elems of batch 0 (test ): \n" + str(y_test[:20]),
+                    f"First 20 y pred elems of batch 0 (test ): \n" + str(test_pred[:20])
+                ]) + "\n------\n"
 
                 if logging != None:
                     logging.info(debugmsg)
