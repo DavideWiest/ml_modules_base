@@ -28,7 +28,7 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
                 ])
 
                 if logging != None:
-                    logging.debug(debugmsg)
+                    logging.info(debugmsg)
                 else:
                     print(debugmsg)
 
@@ -57,7 +57,7 @@ def train_step(model: nn.Module, dataloader: torch.utils.data.DataLoader, loss_f
             ])
 
             if logging != None:
-                logging.debug(debugmsg)
+                logging.info(debugmsg)
             else:
                 print(debugmsg)
 
@@ -102,7 +102,7 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
                     ])
 
                     if logging != None:
-                        logging.debug(debugmsg)
+                        logging.info(debugmsg)
                     else:
                         print(debugmsg)
 
@@ -126,7 +126,7 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
                 ])
 
                 if logging != None:
-                    logging.debug(debugmsg)
+                    logging.info(debugmsg)
                 else:
                     print(debugmsg)
 
