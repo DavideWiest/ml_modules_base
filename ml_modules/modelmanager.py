@@ -117,11 +117,11 @@ class ModelManager():
                 name = best_model[1]
         
         if name_before == name:
-            return None
+            return None, ""
 
         path = self._mk_model_path(dir, subdir, name)
         self.logging.info(f"Loading model from path {path}")
-        return torch.load(path)
+        return torch.load(path), str(path)
             
     def test(self):
         """
