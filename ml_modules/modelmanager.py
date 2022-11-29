@@ -67,7 +67,11 @@ class ModelManager():
                     save = False
 
         if save:
-            name = name + "" if loss == None else f"_loss={loss:.3f}" + "" if acc == None else f"_acc={acc:.2f}" + ".pth"
+            name2 = "" if loss == None else f"_loss={loss:.3f}"
+            name2 += "" if acc == None else f"_acc={acc:.2f}"
+            name2 = name2 + ".pth"
+            name = name + name2
+
             path = self._mk_model_path(dir, subdir, name)
             torch.save(model.state_dict(), path)
             self.logging.info(f"Saving model at path {path}")
@@ -86,6 +90,8 @@ class ModelManager():
         assert name != None or load_best_metric != False, "Specify a name or load the best model"
         
         assert load_best_metric in (False, "loss", "acc"), f"Unsupported argument for load_best_metric: {load_best_metric}"
+
+        name_before = name
 
         if load_best_metric:
             dirpath = self._mk_model_path(dir, subdir)
@@ -107,8 +113,12 @@ class ModelManager():
                             if float(filename_metric) > best_model[0]:
                                 best_model = [float(filename_metric), filename]
 
-            name = best_model[1]
+            if best_model != []:
+                name = best_model[1]
         
+        if name_before == name:
+            return None
+
         path = self._mk_model_path(dir, subdir, name)
         self.logging.info(f"Loading model from path {path}")
         return torch.load(path)
