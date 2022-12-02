@@ -186,7 +186,7 @@ def test_step(model: nn.Module, dataloader, loss_fn: nn.Module, accuracy_fn, dev
 
 
 
-def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, scheduler=None, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None, models_dir="models", models_subdir=None, pred_argmax=None, print_debug_each=False, clip_grad_params=None, clip_grad_value_params=None):
+def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer: torch.optim.Optimizer, loss_fn: torch.nn.Module, accuracy_fn, epochs: int, device, scheduler=None, save_each=2, save_results_location="results.json", compare_saved_metric="loss", early_stop_epoch=None, logging=None, models_dir="models", models_subdir=None, pred_argmax=None, print_debug_each=False, clip_grad_norm_params=None, clip_grad_value_params=None):
     """
     wrapper function to train and test model
     """
@@ -207,7 +207,7 @@ def train_full_fn(model: nn.Module, train_dataloader, test_dataloader, optimizer
 
         print_debug = epoch % print_debug_each == 0 if print_debug_each != False else False
         
-        train_loss, train_acc = train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device, pred_argmax, logging=logging, print_debug=print_debug, scheduler=scheduler, clip_grad_params=clip_grad_params, clip_grad_value_params=clip_grad_value_params)
+        train_loss, train_acc = train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device, pred_argmax, logging=logging, print_debug=print_debug, scheduler=scheduler, clip_grad_norm_params=clip_grad_norm_params, clip_grad_value_params=clip_grad_value_params)
         test_loss, test_acc = test_step(model, test_dataloader, loss_fn, accuracy_fn, device, pred_argmax, logging=logging, print_debug=print_debug)
         results["train_loss"].append(float(train_loss))
         results["train_acc"].append(float(train_acc))
